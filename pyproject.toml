@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "ks"
+version = "0.1.0"
+description = ""
+authors = ["Markus Iorio <markus.iorio@centralnic.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+peewee = "^3.15.2"
+openpyxl = "^3.0.10"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.8.0"
+mypy = "^0.971"
+flake8 = "^5.0.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
