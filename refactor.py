@@ -1,14 +1,14 @@
-import peewee as pw
-from playhouse.reflection import generate_models
+import csv
 
-DB = pw.SqliteDatabase("Chinook_Sqlite_AutoIncrementPKs.sqlite")
+import model
 
 
 class SQLiteDataBase:
-    def __init__(self, database: pw.SqliteDatabase) -> None:
-        self.__DB = database
-        self.__models = generate_models(self.__DB)
-        globals().update(self.__models)
+    def __init__(self) -> None:
+        self.__models: dict[str : model.BaseModel] = model.MODELS
+
+    def connect(self) -> None:
+        model.database.connect()
 
     def __str__(self) -> str:
         return "\n".join(list(self.__models))
@@ -16,9 +16,20 @@ class SQLiteDataBase:
     def __repr__(self) -> str:
         return str(list(self.__models))
 
+    def get_table(self, tablename: str) -> dict:
+        return self.__models.get(tablename, {"NotFound": None})
+
+    def to_csv(self, filename: str, tablename: str) -> None:
+        table = self.get_table(tablename)
+        header = list(table.select().dicts()[0].keys())
+        with open(filename, "w") as csvfile:
+            writer = csv.DictWriter(csvfile, header, delimiter=";")
+            for row in table.select().dicts():
+                writer.writerow(row)
+
 
 def main():
-    sql_db = SQLiteDataBase(DB)
+    sql_db = SQLiteDataBase()
     print(sql_db)
 
 
